@@ -1,179 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>⚡ Grid Wind Power Chatbot</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .chat-container {
-      width: 400px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .chat-box {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-    }
-    .chat-message {
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 80%;
-    }
-    .user {
-      background: #007bff;
-      color: #fff;
-      align-self: flex-end;
-    }
-    .bot {
-      background: #e9ecef;
-      color: #000;
-      align-self: flex-start;
-    }
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #ddd;
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-    }
-    .chat-input button {
-      padding: 10px;
-      border: none;
-      background: #007bff;
-      color: #fff;
-      cursor: pointer;
-    }
-    .options {
-      margin-top: 10px;
-    }
-    .options button {
-      margin: 5px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 8px;
-      background: #28a745;
-      color: #fff;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>⚡ Grid Wind Power FAQ Chatbot</title>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f0f4f9;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  flex-direction:column;
+  margin:0;
+}
+.chat-container{
+  width:500px;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0px 4px 12px rgba(0,0,0,0.15);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  margin-top:20px;
+}
+.chat-box{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  max-height:500px;
+}
+.chat-message{
+  margin:8px 0;
+  padding:10px;
+  border-radius:10px;
+  max-width:90%;
+}
+.user{background:#007bff;color:#fff;align-self:flex-end;}
+.bot{background:#e9ecef;color:#000;align-self:flex-start;}
+.chat-input{display:flex;border-top:1px solid #ddd;}
+.chat-input input{flex:1;padding:10px;border:none;outline:none;}
+.chat-input button{padding:10px;border:none;background:#007bff;color:#fff;cursor:pointer;}
+.options{margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;}
+.options button{padding:6px 12px;border:none;border-radius:8px;background:#28a745;color:#fff;cursor:pointer;}
+.answer{margin:5px 0 15px 20px;padding:10px;border-left:3px solid #007bff;background:#e9ecef;border-radius:8px;box-shadow:2px 2px 6px rgba(0,0,0,0.1);}
+footer{
+  margin-top:20px;
+  font-size:12px;
+  color:#555;
+  max-width:500px;
+  line-height:1.4;
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0px 4px 12px rgba(0,0,0,0.1);
+}
+footer a{color:#007bff;text-decoration:none;}
+footer a:hover{text-decoration:underline;}
+</style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="chat-box" id="chatBox"></div>
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Type a message...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
+<div class="chat-container">
+  <div class="chat-box" id="chatBox"></div>
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type 'hello' to start...">
+    <button onclick="sendMessage()">Send</button>
   </div>
+</div>
 
-  <script>
-    const chatBox = document.getElementById("chatBox");
-    const userInput = document.getElementById("userInput");
+<footer>
+<strong>Maharashtra Power Development Agency (Maharashtra) (Maharashtra Govt.)</strong><br><br>
+All rights reserved ©2022 Maharashtra Energy Development Agency (Government of Maharashtra) India. | Powered by MahaIT<br><br>
+Other links: 
+<a href="#">Terms and Conditions</a> | 
+<a href="#">Copyright Policy</a> | 
+<a href="#">Frequently Asked Questions</a> | 
+<a href="#">Accessibility statements</a> | 
+<a href="#">Sitemap</a> | 
+<a href="#">Help</a> | 
+<a href="#">Website Policies</a> | 
+<a href="#">Feedback</a> | 
+<a href="#">Related Links</a> | 
+<a href="#">Government of India</a> | 
+<a href="#">Government of Maharashtra</a><br><br>
+Total viewers: 188622 | Today's viewers: 28 | Last review: 21-08-2022<br><br>
+Registered office:<br>
+Address: Aundh Road, Opposite Spicer College, Near Animal Husbandry Commissionerate, Aundh, Pune, Maharashtra 411007 (Maharashtra), India.<br>
+<a href="https://www.google.com/maps/place/Aundh+Road,+Pune" target="_blank">View map</a><br><br>
+Phone: 91-020-35000450<br>
+Email: meda[at]mahaurja[dot]com
+</footer>
 
-    const API_KEY = "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";
+<script>
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
 
-    let stage = 0; // Track flow stage
-    let language = "";
-    let category = "";
+let stage=0;
+let language="";
+let category="";
+let currentAnswerDiv=null;
 
-    function addMessage(text, sender) {
-      const msg = document.createElement("div");
-      msg.classList.add("chat-message", sender);
-      msg.textContent = text;
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+// FAQ + Scheme Data
+const faqData = {
+  "FAQ / Wind": [
+    { q:"Are there any Govt. schemes where I can directly invest in Solar Projects / Wind Projects?", a:"GoM has declared a RE Policy 2020 on dated 31.12.2020. Developer / Investor can set up their Wind project under the said policy. It can be a - a) For sale to Discoms b) Captive Consumption c) Third Party sale. Further, developer / investor can also set up their Wind project under the bids announced by SECI and Distribution companies. (https://www.seci.co.in/, https://www.mahadiscom.in/)" },
+    { q:"If I want to have a project with fixed Power Purchase Agreement (PPA) whom should I contact?", a:"Normally Fixed Power Purchased Agreements are not permitted. You have to participate in bids announced by SECI or Distribution companies. (https://www.seci.co.in/, https://www.mahadiscom.in/)" },
+    { q:"What are the Specific Regulations that I must look before entering into this business?", a:"- Maharashtra Electricity Regulatory Commission RE Tariff Regulation (https://www.merc.gov.in/)\n- MERC Open access regulation (https://www.merc.gov.in/)\n- MERC RPO/REC regulation 2019 (https://www.merc.gov.in/)" }
+  ],
+  "Developers – FAQ Wind": [
+    { q:"In what way I can invest in wind?", a:"GoM has declared a RE Policy 2020 dated 31.12.2020. Under the said policy, total target of 2500 MW has been set for wind project for next 5 years. Registered companies, Private/Public Partnership firms, Private Person, Government institutions, Semi Government institutions / undertakings can set up wind projects and invest in RE sector under the said policy." },
+    { q:"Different ways I can sale Wind Energy?", a:"Electricity from wind projects can be sold to distribution companies under competitive bidding or sale to third party through open access or sale of electricity outside the state." },
+    { q:"What are the Micro-sitting guidelines?", a:"Micrositting is science of placing Wind Turbine Generators (WTG / wind mills) for optimisation of generation. Micrositting guidelines specify minimum distance between wind mills of different developers, distance to road/buildings/school/dwellings for safety. Guidelines available at MEDA: www.mahaurja.com" }
+  ],
+  "Schemes": [
+    { q:"Mukhyamantri Saur Krushi Vahini Yojana 2.0 (MSKVY 2.0)", a:"Aim: Solarizing agricultural feeders. Target: 30% feeder solarization by 2025. Source: MSEDCL" },
+    { q:"Solar power for government offices & domestic consumers via Suryaghar Yojana", a:"State intends to bring all government offices under solar power by December 2025. For households: up to 100 units in first phase, up to 300 units in second phase. Source: Hindustan Times, MSEDCL" },
+    { q:"PM-KUSUM and Solar Agricultural Pumps", a:"Solar powered irrigation pumps promoted to reduce dependence on diesel. Source: MSEDCL, Mahaurja" },
+    { q:"Green Power / Model Solar Villages", a:"Creation of model solar villages and fast-tracking green energy projects. Source: SolarQuarter" }
+  ]
+};
 
-    function sendMessage() {
-      const text = userInput.value.trim();
-      if (!text) return;
-      addMessage(text, "user");
-      userInput.value = "";
+function addMessage(text,sender){
+  const div=document.createElement("div");
+  div.classList.add("chat-message",sender);
+  div.textContent=text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
 
-      if (stage === 0 && text.toLowerCase() === "hello") {
-        addMessage("Welcome! Please select your language:", "bot");
-        showLanguageOptions();
-        stage = 1;
-      }
-    }
+function sendMessage(){
+  const text=userInput.value.trim();
+  if(!text) return;
+  userInput.value="";
 
-    function showLanguageOptions() {
-      const div = document.createElement("div");
-      div.classList.add("options");
-      div.innerHTML = `
-        <button onclick="selectLanguage('English')">English</button>
-        <button onclick="selectLanguage('Marathi')">Marathi</button>
-      `;
-      chatBox.appendChild(div);
-    }
+  // Handle "hello" → reset chat
+  if(text.toLowerCase()==="hello"){
+    chatBox.innerHTML="";
+    stage=0; language=""; category=""; currentAnswerDiv=null;
+    addMessage(text,"user");
+    addMessage("Welcome To MEDA — Maharashtra Energy Development Agency, a government agency of the State of Maharashtra, India","bot");
+    showLanguageOptions();
+    stage=1;
+    return;
+  }
 
-    function selectLanguage(lang) {
-      language = lang;
-      addMessage("You selected " + lang, "bot");
-      addMessage("Now please choose: Scheme or FAQ", "bot");
-      showCategoryOptions();
-      stage = 2;
-    }
+  // Handle "clear" → reset chat
+  if(text.toLowerCase()==="clear"){
+    chatBox.innerHTML="";
+    stage=0; language=""; category=""; currentAnswerDiv=null;
+    return;
+  }
 
-    function showCategoryOptions() {
-      const div = document.createElement("div");
-      div.classList.add("options");
-      div.innerHTML = `
-        <button onclick="selectCategory('Scheme')">Scheme</button>
-        <button onclick="selectCategory('FAQ')">FAQ</button>
-      `;
-      chatBox.appendChild(div);
-    }
+  addMessage(text,"user");
+}
 
-    function selectCategory(cat) {
-      category = cat;
-      addMessage("You selected " + cat, "bot");
-      askAI("Give information about " + cat + " in " + language);
-      stage = 3;
-    }
+// Show language buttons
+function showLanguageOptions(){
+  const div=document.createElement("div");
+  div.classList.add("options");
+  div.innerHTML=`
+    <button onclick="selectLanguage('English')">English</button>
+    <button onclick="selectLanguage('Marathi')">Marathi</button>
+  `;
+  chatBox.appendChild(div);
+}
 
-    async function askAI(prompt) {
-      addMessage("Thinking...", "bot");
+// Language select
+function selectLanguage(lang){
+  language=lang;
+  addMessage("You selected "+lang,"bot");
+  addMessage("Now select Category:","bot");
+  showCategoryOptions();
+  stage=2;
+}
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
+// Category options
+function showCategoryOptions(){
+  const div=document.createElement("div");
+  div.classList.add("options");
+  div.innerHTML=`
+    <button onclick="selectCategory('Schemes')">Schemes</button>
+    <button onclick="selectCategory('FAQ / Wind')">FAQ / Wind</button>
+    <button onclick="selectCategory('Developers – FAQ Wind')">Developers – FAQ Wind</button>
+    <button onclick="selectCategory('Other')">Other</button>
+  `;
+  chatBox.appendChild(div);
+}
 
-      const data = await response.json();
-      document.querySelectorAll(".bot").forEach((el) => {
-        if (el.textContent === "Thinking...") el.remove();
-      });
+// Category select
+function selectCategory(cat){
+  category=cat;
+  addMessage("You selected "+cat,"bot");
 
-      if (data.choices && data.choices[0].message) {
-        addMessage(data.choices[0].message.content, "bot");
-      } else {
-        addMessage("⚠️ Error: " + JSON.stringify(data), "bot");
-      }
-    }
-  </script>
+  if(cat==="Other"){
+    const facts = [
+      "Maharashtra Energy Development Agency (MEDA) is the nodal agency for renewable energy in Maharashtra.",
+      "It was established in 1985 under the Societies Registration Act, 1860.",
+      "MEDA works under the Government of Maharashtra and is linked with the Ministry of New and Renewable Energy (MNRE), Govt. of India.",
+      "Its main aim is to promote renewable energy and energy conservation in the state.",
+      "MEDA acts as a bridge between government policies and practical implementation of projects.",
+      "It manages state and central government schemes related to solar, wind, small hydro, biomass, and energy efficiency.",
+      "MEDA also works on awareness programs to educate citizens about clean energy.",
+      "It maintains SRRA (Solar Radiation Resource Assessment) stations for accurate solar data.",
+      "MEDA ensures compliance with the Energy Conservation Act, 2001 in Maharashtra.",
+      "The agency supports both urban and rural development through renewable energy initiatives."
+    ];
+    const randomFact = facts[Math.floor(Math.random() * facts.length)];
+    addMessage(randomFact,"bot");
+    return;
+  }
+
+  showQuestions(cat);
+  stage=3;
+}
+
+// Show questions
+function showQuestions(cat){
+  const div=document.createElement("div");
+  div.classList.add("options");
+  let btns="";
+  faqData[cat].forEach((item,i)=>{
+    btns+=`<button onclick="showAnswer('${cat}',${i})">${item.q}</button>`;
+  });
+  div.innerHTML=btns;
+  chatBox.appendChild(div);
+}
+
+// Show answer (single)
+function showAnswer(cat,index){
+  if(currentAnswerDiv) currentAnswerDiv.remove();
+  const answer=faqData[cat][index].a;
+  const div=document.createElement("div");
+  div.classList.add("answer");
+  div.textContent=answer;
+  chatBox.appendChild(div);
+  currentAnswerDiv = div;
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+</script>
 </body>
 </html>
