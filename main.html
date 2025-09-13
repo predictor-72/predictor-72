@@ -2,80 +2,176 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Grid Wind Power Chatbot</title>
+  <title>⚡ Grid Wind Power Chatbot</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f4f7f9; }
-    .chat-container { width: 400px; height: 600px; margin: 40px auto;
-      background: #fff; border-radius: 12px; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
-      display: flex; flex-direction: column; overflow: hidden; }
-    .chat-header { background: #007bff; color: #fff; padding: 15px; text-align: center; }
-    .options { padding: 10px; display: flex; gap: 10px; justify-content: center; border-bottom: 1px solid #ddd; }
-    .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
-    .message { margin: 8px 0; padding: 10px 14px; border-radius: 10px; max-width: 75%; }
-    .user { background: #d1e7dd; align-self: flex-end; }
-    .bot { background: #e2e3e5; align-self: flex-start; }
-    .chat-input { display: flex; border-top: 1px solid #ccc; }
-    .chat-input input { flex: 1; border: none; padding: 12px; }
-    .chat-input button { background: #007bff; border: none; color: white; padding: 0 20px; cursor: pointer; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .chat-container {
+      width: 400px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-box {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+    }
+    .user {
+      background: #007bff;
+      color: #fff;
+      align-self: flex-end;
+    }
+    .bot {
+      background: #e9ecef;
+      color: #000;
+      align-self: flex-start;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+    .chat-input button {
+      padding: 10px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    .options {
+      margin-top: 10px;
+    }
+    .options button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #28a745;
+      color: #fff;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <div class="chat-header">⚡ Grid Wind Power Chatbot</div>
-    <div class="options">
-      <select id="language"><option value="english">English</option><option value="marathi">Marathi</option></select>
-      <select id="mode"><option value="faq">FAQ</option><option value="scheme">Scheme</option></select>
-    </div>
     <div class="chat-box" id="chatBox"></div>
     <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Type your message..." />
+      <input type="text" id="userInput" placeholder="Type a message...">
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
 
   <script>
-    const apiKey = "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"; // apni API key daalni hogi
     const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
 
-    function appendMessage(content, sender) {
-      const div = document.createElement("div");
-      div.classList.add("message", sender);
-      div.innerText = content;
-      chatBox.appendChild(div);
+    const API_KEY = "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";
+
+    let stage = 0; // Track flow stage
+    let language = "";
+    let category = "";
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("chat-message", sender);
+      msg.textContent = text;
+      chatBox.appendChild(msg);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const message = input.value.trim();
-      const language = document.getElementById("language").value;
-      const mode = document.getElementById("mode").value;
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      addMessage(text, "user");
+      userInput.value = "";
 
-      if (!message) return;
-      appendMessage(message, "user");
-      input.value = "";
+      if (stage === 0 && text.toLowerCase() === "hello") {
+        addMessage("Welcome! Please select your language:", "bot");
+        showLanguageOptions();
+        stage = 1;
+      }
+    }
 
-      let prompt = `You are Grid Wind Power chatbot. Language: ${language}. Mode: ${mode}. User asked: ${message}`;
+    function showLanguageOptions() {
+      const div = document.createElement("div");
+      div.classList.add("options");
+      div.innerHTML = `
+        <button onclick="selectLanguage('English')">English</button>
+        <button onclick="selectLanguage('Marathi')">Marathi</button>
+      `;
+      chatBox.appendChild(div);
+    }
 
-      try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + apiKey
-          },
-          body: JSON.stringify({
-            model: "gpt-4o-mini",
-            messages: [{ role: "user", content: prompt }]
-          })
-        });
+    function selectLanguage(lang) {
+      language = lang;
+      addMessage("You selected " + lang, "bot");
+      addMessage("Now please choose: Scheme or FAQ", "bot");
+      showCategoryOptions();
+      stage = 2;
+    }
 
-        const data = await response.json();
-        console.log(data); // Debug ke liye
-        const reply = data.choices?.[0]?.message?.content || "⚠️ No reply received.";
-        appendMessage(reply, "bot");
-      } catch (error) {
-        appendMessage("⚠️ Error: " + error.message, "bot");
+    function showCategoryOptions() {
+      const div = document.createElement("div");
+      div.classList.add("options");
+      div.innerHTML = `
+        <button onclick="selectCategory('Scheme')">Scheme</button>
+        <button onclick="selectCategory('FAQ')">FAQ</button>
+      `;
+      chatBox.appendChild(div);
+    }
+
+    function selectCategory(cat) {
+      category = cat;
+      addMessage("You selected " + cat, "bot");
+      askAI("Give information about " + cat + " in " + language);
+      stage = 3;
+    }
+
+    async function askAI(prompt) {
+      addMessage("Thinking...", "bot");
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      document.querySelectorAll(".bot").forEach((el) => {
+        if (el.textContent === "Thinking...") el.remove();
+      });
+
+      if (data.choices && data.choices[0].message) {
+        addMessage(data.choices[0].message.content, "bot");
+      } else {
+        addMessage("⚠️ Error: " + JSON.stringify(data), "bot");
       }
     }
   </script>
