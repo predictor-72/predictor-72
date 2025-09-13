@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Generative Chatbot — Wind FAQ</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#0ea5a4;--muted:#94a3b8}
+    body{font-family:Inter,system-ui,Segoe UI,Arial;background:linear-gradient(180deg,#071124,#0b1220);color:#e6eef6;margin:0;padding:20px}
+    .container{max-width:980px;margin:18px auto;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:18px;box-shadow:0 6px 24px rgba(2,6,23,.6)}
+    header{display:flex;gap:12px;align-items:center}
+    h1{margin:0;font-size:20px}
+    .lang-select{margin-left:auto}
+    .row{display:flex;gap:12px;margin-top:12px}
+    .card{background:var(--card);padding:12px;border-radius:10px;flex:1}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    select,input,textarea,button{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.04);background:transparent;color:inherit;font-size:14px}
+    textarea{min-height:100px}
+    .btn{cursor:pointer;background:var(--accent);color:#022; border:none;padding:10px 12px;border-radius:8px}
+    .small{font-size:13px;color:var(--muted)}
+    .options{display:flex;gap:8px;margin-top:8px}
+    .chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer}
+    .chip.active{background:rgba(14,165,164,0.14);border:1px solid rgba(14,165,164,0.18)}
+    .faq-list{margin-top:10px;display:grid;grid-template-columns:1fr;gap:8px}
+    .faq-item{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;cursor:pointer}
+    pre{white-space:pre-wrap;background:rgba(0,0,0,0.2);padding:12px;border-radius:8px}
+    footer{margin-top:14px;font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AI Generative Chatbot — Wind FAQ</h1>
+      <div class="lang-select">
+        <label for="lang">Select language / भाषा निवडा</label>
+        <select id="lang">
+          <option value="en">English</option>
+          <option value="mr">Marathi / मराठी</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="row">
+      <div class="card" style="flex:2">
+        <label>Ask anything</label>
+        <textarea id="userInput" placeholder="Type your question here..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" id="sendBtn">Ask AI</button>
+          <button id="clearBtn">Clear</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Response</label>
+          <pre id="aiResponse"></pre>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1">
+        <label>Choose quick options</label>
+        <div class="options">
+          <div class="chip active" data-mode="ai">AI</div>
+          <div class="chip" data-mode="faq">FAQ / Wind</div>
+          <div class="chip" data-mode="dev">Developers – FAQ Wind</div>
+        </div>
+
+        <div id="faqArea" style="margin-top:12px;display:none">
+          <label>Select question</label>
+          <div class="faq-list" id="faqList"></div>
+        </div>
+
+        <div id="devArea" style="margin-top:12px;display:none">
+          <label>Developers FAQ</label>
+          <div class="faq-list" id="devList"></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Selected Q / Answer</label>
+          <pre id="selectedAnswer">(Select a question from the lists to see its answer)</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FAQ_WIND = [
+      {q:"Are there any Govt. schemes where I can directly invest in Solar Projects / Wind Projects?",a:`GoM has declared a RE Policy 2020 ... (details as provided).`},
+      {q:"If I want to have a project with fixed Power Purchase Agreement (PPA) whom should I contact?",a:`Normally Fixed Power Purchased Agreements are not permitted ... (details as provided).`},
+      {q:"What are the Specific Regulations that I must look before entering into this business?",a:`MERC RE Tariff Regulation, Open Access regulation, RPO/REC regulation 2019 ... (details as provided).`}
+    ];
+
+    const DEV_FAQ = [
+      {q:"In what way I can invest in wind?",a:`GoM RE Policy 2020 ... (details as provided).`},
+      {q:"Different ways I can sale Wind Energy?",a:`Sale to Discoms, third party via open access, outside the state ...`},
+      {q:"What are the Micro-sitting guidelines?",a:`Micrositting is science of placing wind turbines ... (details as provided).`},
+      {q:"Can I get Govt. land and who will help me to get private land?",a:`Government land lease possible, contact Collector ... Private land via aggregators.`},
+      {q:"What is Open Access?",a:`Means generator can sell power using distribution infra ... for >1MW consumers.`},
+      {q:"Third Party Sale?",a:`Sale to consumers other than Discom or captive.`},
+      {q:"Power Purchase Agreement with Distribution Companies?",a:`Through competitive bidding, valid for 25 years.`},
+      {q:"Can there be a fixed rate PPA instead by Open Bidding?",a:`No, only competitive bidding allowed.`},
+      {q:"What is the likely rate that I will get if I put up Investment?",a:`In FY19-20, discovered tariff ~Rs.2.87 per unit.`},
+      {q:"Power Purchase Agreement (PPA) is for how many years?",a:`25 years.`},
+      {q:"Is there any Scheme without Tender?",a:`Yes, GoM RE Policy 2020 for captive / third party sale.`}
+    ];
+
+    const chips=document.querySelectorAll('.chip');
+    const faqArea=document.getElementById('faqArea');
+    const devArea=document.getElementById('devArea');
+    const faqList=document.getElementById('faqList');
+    const devList=document.getElementById('devList');
+    const selectedAnswer=document.getElementById('selectedAnswer');
+    const aiResponse=document.getElementById('aiResponse');
+    const sendBtn=document.getElementById('sendBtn');
+    const clearBtn=document.getElementById('clearBtn');
+    const userInput=document.getElementById('userInput');
+
+    function setMode(mode){
+      chips.forEach(c=>c.classList.toggle('active',c.dataset.mode===mode));
+      faqArea.style.display=mode==='faq'?'block':'none';
+      devArea.style.display=mode==='dev'?'block':'none';
+    }
+    chips.forEach(c=>c.addEventListener('click',()=>setMode(c.dataset.mode)));
+    setMode('ai');
+
+    function buildList(listEl,items){
+      listEl.innerHTML='';
+      items.forEach((it,idx)=>{
+        const div=document.createElement('div');
+        div.className='faq-item';
+        div.textContent=(idx+1)+'. '+it.q;
+        div.addEventListener('click',()=>{selectedAnswer.textContent=it.q+"\n\n"+it.a});
+        listEl.appendChild(div);
+      });
+    }
+    buildList(faqList,FAQ_WIND);
+    buildList(devList,DEV_FAQ);
+
+    clearBtn.addEventListener('click',()=>{userInput.value='';aiResponse.textContent='';selectedAnswer.textContent='(Select a question from the lists to see its answer)';});
+
+    // Mock AI generator
+    sendBtn.addEventListener('click',()=>{
+      const q=userInput.value.trim().toLowerCase();
+      if(!q){aiResponse.textContent='Please type a question first.';return;}
+      if(q.includes("ask me")){
+        aiResponse.textContent='Welcome to chatbot';
+      } else if(q.includes("give me info about chatbot")){
+        aiResponse.textContent='Maharashtra Energy Development Agency (MEDA) for renewable energy programs, data, and policies in Maharashtra.';
+      } else {
+        aiResponse.textContent=`You asked: ${q}\n\nThis is a demo reply.`;
+      }
+    });
+
+    // Language switch
+    const lang=document.getElementById('lang');
+    lang.addEventListener('change',()=>{
+      const v=lang.value;
+      if(v==='en'){
+        document.querySelector('h1').textContent='AI Generative Chatbot — Wind FAQ';
+        document.querySelector('label[for="lang"]').textContent='Select language / भाषा निवडा';
+        userInput.placeholder='Type your question here...';
+        sendBtn.textContent='Ask AI';
+        clearBtn.textContent='Clear';
+      }else if(v==='mr'){
+        document.querySelector('h1').textContent='AI जनरेटिव्ह चैटबॉट — विंड FAQ';
+        document.querySelector('label[for="lang"]').textContent='भाषा निवडा / Select language';
+        userInput.placeholder='इथे तुमचा प्रश्न टाका...';
+        sendBtn.textContent='AI विचारा';
+        clearBtn.textContent='स्वच्छ करा';
+      }else{
+        document.querySelector('h1').textContent='AI जनरेटिव्ह चैटबॉट — विंड FAQ';
+        document.querySelector('label[for="lang"]').textContent='भाषा निवडा / Select language';
+        userInput.placeholder='यहाँ अपना प्रश्न लिखिए...';
+        sendBtn.textContent='AI पूछें';
+        clearBtn.textContent='साफ़ करें';
+      }
+    });
+  </script>
+</body>
+</html>
